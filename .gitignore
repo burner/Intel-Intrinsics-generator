@@ -1,0 +1,15 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/intrinsicripper
+intrinsicripper.so
+intrinsicripper.dylib
+intrinsicripper.dll
+intrinsicripper.a
+intrinsicripper.lib
+intrinsicripper-test-*
+*.exe
+*.o
+*.obj
+*.lst
