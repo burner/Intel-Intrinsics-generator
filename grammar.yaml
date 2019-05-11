@@ -1,0 +1,94 @@
+Start:
+    B: [Block#block]
+
+If:
+    If: [ifKeyword, Expr#expr, Blocks#block, fi]
+    IfElse: [ifKeyword, Expr#expr, Blocks#block, elseKeyword, Blocks#block2, fi]
+
+For:
+    To: [forKeyword, Identifier#tok, assign, intValue#start, to, intValue#end, Blocks#block, endfor]
+
+Blocks:
+    One: [Block#block]
+    Follow: [Block#block, Blocks#follow]
+
+Block:
+    I: [If#i]
+    F: [For#f]
+    A: [Assign#a]
+    FUN: [define, Identifier#name, Call#para, lcurly, Blocks#block, rcurly]
+    RET: [returnKeyword, Expr#expr]
+    S: [Switch#sw]
+
+Switch:
+    S: [caseKeyword, lparen, Expr#sel, rparen, of, Cases#cases, esacKeyword]
+
+Cases:
+    One: [intValue#val, colon, Block#b]
+    Many: [intValue#val, colon, Block#b, Cases#follow]
+
+Assign:
+    As: [Expr#left, assign, Expr#right]
+    Ter: [Expr#left, assign, Expr#right, question, Expr#t, colon, Expr#f]
+
+Expr:
+    E: [RelExpr#post]
+
+RelExpr:
+    EE: [CmpExpr#ce]
+    L: [CmpExpr#ce, less, RelExpr#follow]
+    G: [CmpExpr#ce, greater, RelExpr#follow]
+    LE: [CmpExpr#ce, lessequal, RelExpr#follow]
+    GE: [CmpExpr#ce, greaterequal, RelExpr#follow]
+
+CmpExpr:
+    EQ: [MulExpr#me, equal, CmpExpr#follow]
+    NEQ: [MulExpr#me, equal, CmpExpr#follow]
+    Mul: [MulExpr#me]
+
+MulExpr:
+    Star: [AddExpr#add, star, MulExpr#follow]
+    Div: [AddExpr#add, div, MulExpr#follow]
+    Mod: [AddExpr#add, mod, MulExpr#follow]
+    Add: [AddExpr#add]
+
+AddExpr:
+    Plus: [UnaryExpr#post, plus, AddExpr#follow]
+    Minus: [UnaryExpr#post, minus, AddExpr#follow]
+    Post: [UnaryExpr#post]
+
+UnaryExpr:
+    M: [minus, PostfixExpr#post]
+    P: [PostfixExpr#post]
+
+PostfixExpr:
+    Ident: [Identifier#ident]
+    Array: [Identifier#ident, PostfixFollow#follow]
+    Primary: [PrimaryExpr#prim]
+
+PostfixFollow:
+    Dot: [dot, PostfixExpr#follow]
+    Array: [Array#array]
+    ArrayDot: [Array#array, dot, PostfixExpr#postfix]
+    Call: [Call#call]
+    CallFollow: [Call#call, PostfixFollow#pffollow]
+
+Array:
+    Empty: [lbrack, rbrack]
+    Index: [lbrack, Expr#expr, rbrack]
+    Slice: [lbrack, Expr#expr, colon, Expr#expr2, rbrack]
+
+Call:
+    Empty: [lparen, rparen]
+    Args: [lparen, ArgList#args, rparen]
+
+ArgList:
+    Arg: [Expr#arg]
+    Args: [Expr#arg, comma, ArgList#next]
+
+PrimaryExpr:
+    Integer: [intValue#value]
+    Parenthesis: [lparen, Expr#expr, rparen]
+
+Identifier:
+    Ident: [identifier#value]

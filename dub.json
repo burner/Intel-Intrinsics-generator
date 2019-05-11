@@ -1,0 +1,12 @@
+{
+	"authors": [
+		"burner"
+	],
+	"copyright": "Copyright © 2019, burner",
+	"description": "A minimal D application.",
+	"license": "gpl3",
+	"dependencies" : {
+		"htmld": "~>0.3.7"
+	},
+	"name": "intrinsicripper"
+}
