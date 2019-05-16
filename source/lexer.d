@@ -8,7 +8,7 @@ import std.experimental.logger;
 
 struct Lexer {
 	string input;
-	long stringPos;
+	uint stringPos;
 
 	int line;
 	int column;
@@ -176,8 +176,8 @@ struct Lexer {
 				assert(false);
 			}
 		} else {
-			ulong b = this.stringPos;	
-			ulong e = this.stringPos;
+			uint b = this.stringPos;	
+			uint e = this.stringPos;
 			switch(this.input[this.stringPos]) {
 				case ':':
 					++this.stringPos;
@@ -332,7 +332,7 @@ struct Lexer {
 		}
 	}
 
-	bool testStrAndInc(string s)(ref size_t e) @safe {
+	bool testStrAndInc(string s)(ref uint e) @safe {
 		for(size_t i = 0; i < s.length; ++i) {
 			if(this.stringPos < this.input.length
 					&& this.input[this.stringPos] == s[i])
@@ -347,7 +347,7 @@ struct Lexer {
 		return true;
 	}
 
-	bool testCharAndInc(const(char) c, ref ulong e) {
+	bool testCharAndInc(const(char) c, ref uint e) {
 		if(this.stringPos < this.input.length 
 				&& this.input[this.stringPos] == c)
 		{
