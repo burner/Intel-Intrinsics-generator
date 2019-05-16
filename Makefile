@@ -6,7 +6,6 @@ grammar:
 		-t source/treevisitor.d -e source/exception.d -p source/parser.d
 
 style_lint:
-
 	@echo "Enforce braces on the same line"
 	grep -nrE '^[\t ]*{' $$(find source -name '*.d'); test $$? -eq 1
 
