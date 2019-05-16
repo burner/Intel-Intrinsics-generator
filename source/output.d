@@ -1,4 +1,4 @@
-import std.algorithm : map;
+import std.algorithm.iteration : map;
 import std.format : format, formattedWrite;
 import std.string;
 import std.stdio;
@@ -16,8 +16,7 @@ struct Param {
 	}
 }
 
-struct Func 
-{
+struct Func {
 	string name;
 	string tech;
 	Param ret;
@@ -37,45 +36,44 @@ string printIntrinsicAsDBody(Func f) {
 	return app.data;
 }
 
-string indent(string s)
-{
-    return s.replace("\n", "\n    ");
+string indent(string s) {
+	return s.replace("\n", "\n	");
 }
 
-void printIntrinsicAsDSignature(Out)(ref Out o, Func f) 
-{ 
-    formattedWrite!"%s %s(%-(%s, %)) pure nothrow @nogc @safe;\n"(o, f.ret.type, f.name,
-                                                                f.params.map!(a => format("%s %s", a.type, a.name)));
+void printIntrinsicAsDSignature(Out)(ref Out o, Func f) {
+	formattedWrite!"%s %s(%-(%s, %)) pure nothrow @nogc @safe;\n"(o, f.ret.type,
+			f.name, f.params.map!(a => format("%s %s", a.type, a.name))
+		);
 }
 
-void printIntrinsicAsDBody(Out)(ref Out o, Func f) 
-{
-    if (f.desc)
-        formattedWrite!"/// %s\n"(o, f.desc);
-	formattedWrite!"%s %s(%-(%s, %)) pure nothrow @nogc @safe\n{\n"(o, f.ret.type, f.name,
-			f.params.map!(a => format("%s %s", a.type, a.name)));
-    if (f.operation)
-    {
-	    auto l = Lexer(f.operation);
-	    auto parser = Parser(l);
-	    try {
-		    auto d = parser.parseStart();
-		    DWriter!Out vis = new DWriter!Out(o);
-		    vis.accept(cast(const(Start))d);
-	    } 
-        catch(Throwable e) 
-        {
-            // didn't parse, put the operation body
-            string operationContent = format("    /*%s*/\n", f.operation);
-            formattedWrite!"%s"(o, operationContent.indent);
+void printIntrinsicAsDBody(Out)(ref Out o, Func f) {
+	if(f.desc) {
+		formattedWrite!"/// %s\n"(o, f.desc);
+	}
+	formattedWrite!"%s %s(%-(%s, %)) pure nothrow @nogc @safe\n{\n"(o,
+			f.ret.type, f.name, f.params.map!(a => format("%s %s", a.type,
+			a.name))
+		);
 
-            string parseErrorMessage = format("//%s\n", e.msg);
-            formattedWrite!"%s"(o, parseErrorMessage.indent);
+	if(f.operation) {
+		auto l = Lexer(f.operation);
+		auto parser = Parser(l);
+		try {
+			auto d = parser.parseStart();
+			DWriter!Out vis = new DWriter!Out(o);
+			vis.accept(cast(const(Start))d);
+		} catch(Throwable e) {
+			// didn't parse, put the operation body
+			string operationContent = format("	/*%s*/\n", f.operation);
+			formattedWrite!"%s"(o, operationContent.indent);
 
-            formattedWrite!"assert(false, \"Failed to parse\");\n"(o);
-	    } 
-        formattedWrite!"}\n\n"(o);
-    }
-    else
-        throw new Exception("Intrinsic has no pseudo-code");
+			string parseErrorMessage = format("//%s\n", e.msg);
+			formattedWrite!"%s"(o, parseErrorMessage.indent);
+
+			formattedWrite!"assert(false, \"Failed to parse\");\n"(o);
+		}
+		formattedWrite!"}\n\n"(o);
+	} else {
+		throw new Exception("Intrinsic has no pseudo-code");
+	}
 }

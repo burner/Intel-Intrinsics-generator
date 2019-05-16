@@ -3,9 +3,9 @@ import parser;
 
 unittest {
 	string s = `
-DEFINE ReduceArgumentPD(src1[63:0], imm8[7:0])
-{
-	m := imm8[7:4] // number of fraction bits after the binary point to be preserved
+DEFINE ReduceArgumentPD(src1[63:0], imm8[7:0]) {
+	// number of fraction bits after the binary point to be preserved
+	m := imm8[7:4]
 	rc := imm8[1:0] // round control
 	rc_src := imm8[2] // round ccontrol source
 	spe := 0
